@@ -102,6 +102,28 @@ def load_csv(filename):
         return pd.DataFrame()
 
 
+def load_figure_csv(filename):
+    """Safely load a CSV stored inside the figures folder."""
+    file_path = FIGURES_DIR / filename
+
+    if not file_path.exists():
+        return pd.DataFrame()
+
+    try:
+        df = pd.read_csv(file_path)
+
+        # Remove accidental unnamed CSV columns
+        df = df.loc[
+            :,
+            ~df.columns.astype(str).str.startswith("Unnamed")
+        ]
+
+        return df
+
+    except Exception:
+        return pd.DataFrame()
+
+
 def find_column(df, possible_names):
     """Find a column even if the exact capitalization differs."""
 
@@ -191,10 +213,10 @@ def get_first_numeric_value(df, possible_names):
     return value
 
 
-def show_missing_file(filename):
+def show_missing_file(filename, folder="data"):
 
     st.warning(
-        f"`{filename}` was not found in the `data` folder."
+        f"`{filename}` was not found in the `{folder}` folder."
     )
 
 
@@ -231,7 +253,12 @@ best_window = load_csv(
     "best_early_prediction_window.csv"
 )
 
-q4_comparison = load_csv(
+
+# IMPORTANT:
+# Q4_accuracy_comparison.csv is stored inside FIGURES,
+# not inside DATA.
+
+q4_comparison = load_figure_csv(
     "Q4_accuracy_comparison.csv"
 )
 
@@ -243,14 +270,12 @@ q4_comparison = load_csv(
 # ------------------------------------------------------------
 # Documented Q4 proposed-model results
 # ------------------------------------------------------------
-# These values are used for the main Q4 KPI cards.
-#
 # 89.53% = proposed Q4 accuracy
 # 88.69% = precision
 # 97.11% = recall
 # 92.71% = F1 score
 #
-# 85.83% is retained ONLY as the base-paper benchmark below.
+# 85.83% is retained ONLY as the base-paper benchmark.
 # ------------------------------------------------------------
 
 DEFAULT_Q4_ACCURACY = 89.53
@@ -263,8 +288,6 @@ DEFAULT_BASE_ACCURACY = 85.83
 
 # IMPORTANT:
 # Use the documented proposed Q4 accuracy directly.
-# This prevents the saved CSV from replacing 89.53%
-# with the separate/base-paper benchmark value.
 
 q4_accuracy = DEFAULT_Q4_ACCURACY
 
@@ -1285,8 +1308,9 @@ elif page == "🧪 Model Comparison":
 
     if q4_comparison.empty:
 
-        show_missing_file(
-            "Q4_accuracy_comparison.csv"
+        st.warning(
+            "`Q4_accuracy_comparison.csv` was not found "
+            "inside the `figures` folder."
         )
 
     else:
@@ -1474,7 +1498,7 @@ elif page == "📚 Methodology":
     )
 
 
-    required_files = [
+    required_data_files = [
         "Q1_pass_fail.csv",
         "Q2_pass_fail.csv",
         "Q3_pass_fail.csv",
@@ -1484,25 +1508,48 @@ elif page == "📚 Methodology":
         "Q4_final_test_results.csv",
         "FINAL_PROJECT_RESULTS.csv",
         "early_prediction_results.csv",
-        "best_early_prediction_window.csv",
-        "Q4_accuracy_comparison.csv"
+        "best_early_prediction_window.csv"
     ]
 
 
     status_rows = []
 
 
-    for filename in required_files:
+    # -------------------------
+    # DATA FOLDER FILES
+    # -------------------------
+
+    for filename in required_data_files:
 
         status_rows.append(
             {
                 "File": filename,
+                "Folder": "data",
                 "Status":
                     "✓ Available"
                     if (DATA_DIR / filename).exists()
                     else "✗ Missing"
             }
         )
+
+
+    # -------------------------
+    # FIGURES FOLDER FILE
+    # -------------------------
+
+    status_rows.append(
+        {
+            "File": "Q4_accuracy_comparison.csv",
+            "Folder": "figures",
+            "Status":
+                "✓ Available"
+                if (
+                    FIGURES_DIR /
+                    "Q4_accuracy_comparison.csv"
+                ).exists()
+                else "✗ Missing"
+        }
+    )
 
 
     st.dataframe(
