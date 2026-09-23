@@ -337,13 +337,7 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-### Step 3 — Open the dashboard
 
-Streamlit will provide a local address, normally:
-
-```text
-http://localhost:8501
-```
 
 ---
 
