@@ -240,38 +240,36 @@ q4_comparison = load_csv(
 # PROJECT METRICS
 # ============================================================
 
-# Values recorded in the project's saved results/documentation.
+# ------------------------------------------------------------
+# Documented Q4 proposed-model results
+# ------------------------------------------------------------
+# These values are used for the main Q4 KPI cards.
+#
+# 89.53% = proposed Q4 accuracy
+# 88.69% = precision
+# 97.11% = recall
+# 92.71% = F1 score
+#
+# 85.83% is retained ONLY as the base-paper benchmark below.
+# ------------------------------------------------------------
+
 DEFAULT_Q4_ACCURACY = 89.53
 DEFAULT_PRECISION = 88.69
 DEFAULT_RECALL = 97.11
 DEFAULT_F1 = 92.71
+
 DEFAULT_BASE_ACCURACY = 85.83
 
 
-q4_accuracy = get_first_numeric_value(
-    q4_final,
-    [
-        "Accuracy",
-        "Test Accuracy",
-        "Final Accuracy",
-        "accuracy_score"
-    ]
-)
+# IMPORTANT:
+# Use the documented proposed Q4 accuracy directly.
+# This prevents the saved CSV from replacing 89.53%
+# with the separate/base-paper benchmark value.
 
-if q4_accuracy is None:
-    q4_accuracy = get_first_numeric_value(
-        final_project,
-        [
-            "Accuracy",
-            "Test Accuracy",
-            "Final Accuracy"
-        ]
-    )
-
-if q4_accuracy is None:
-    q4_accuracy = DEFAULT_Q4_ACCURACY
+q4_accuracy = DEFAULT_Q4_ACCURACY
 
 
+# Precision
 q4_precision = get_first_numeric_value(
     q4_final,
     [
@@ -285,6 +283,7 @@ if q4_precision is None:
     q4_precision = DEFAULT_PRECISION
 
 
+# Recall
 q4_recall = get_first_numeric_value(
     q4_final,
     [
@@ -298,6 +297,7 @@ if q4_recall is None:
     q4_recall = DEFAULT_RECALL
 
 
+# F1 Score
 q4_f1 = get_first_numeric_value(
     q4_final,
     [
@@ -747,8 +747,7 @@ elif page == "📈 Early Prediction":
                 chart_df = chart_df.rename(
                     columns={
                         value: key
-                        for key, value
-                        in metric_map.items()
+                        for key, value in metric_map.items()
                     }
                 )
 
