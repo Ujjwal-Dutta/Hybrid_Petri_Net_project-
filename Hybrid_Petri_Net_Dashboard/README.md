@@ -367,10 +367,10 @@ The Streamlit application reads the project data using relative paths, so the da
 
 ## 🔗 Live Dashboard
 
-After deployment, add your Streamlit URL here:
+ Streamlit URL here:
 
 ```text
-https://YOUR-APP-NAME.streamlit.app
+https://hybrid-petri-net.streamlit.app/
 ```
 
 ---
