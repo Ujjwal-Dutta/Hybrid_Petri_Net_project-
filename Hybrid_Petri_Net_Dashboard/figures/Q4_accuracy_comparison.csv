@@ -1,0 +1,9 @@
+Model,Accuracy
+"Base Paper
+Random Forest",85.83
+Your RF,88.59
+Your ET,88.73
+Your GB,89.08
+Your HGB,89.13
+"Proposed
+Final Model",89.53
